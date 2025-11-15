@@ -1,412 +1,782 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>AccessiBuild — Accessibility Engine</title>
+  <meta charset="UTF-8" />
+  <title>AccessiBuild – AI-Driven Accessibility</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: #020617;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.12);
+      --text-main: #f9fafb; 
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --chip-bg: #020617;
+      --shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.7);
+      --radius-xl: 24px;
+    }
 
-    * { box-sizing: border-box; margin:0; padding:0; }
+     body[data-theme="light"] {
+      --bg: #f3f4f6;
+      --bg-soft: #e5e7eb;
+      --card: #ffffff;
+      --accent: #16a34a;
+      --accent-soft: rgba(22, 163, 74, 0.12);
+      --text-main: #0f172a;
+      --text-muted: #4b5563;
+      --border-subtle: #e5e7eb;
+      --chip-bg: #f9fafb;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: "Poppins", system-ui, sans-serif;
-      background:#eef3f7;
-      color:#0f172a;
-      height:100vh;
-      overflow:hidden; /* NO SCROLL */
-      padding: 14px;
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top left, var(--bg-soft), var(--bg) 55%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
     }
 
-    /* HEADER */
-    header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      max-width:1200px;
-      margin:0 auto 14px auto;
-    }
-    .brand {
-      font-weight:700;
-      font-size:20px;
-      color:#0b66b0;
-    }
-    nav a, nav button {
-      padding:8px 12px;
-      text-decoration:none;
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      border-radius:10px;
-      font-weight:600;
-      color:#083a6b;
-    }
-    nav a:hover, nav button:hover {
-      background:rgba(8,58,107,0.06);
-    }
-    #demoBtn {
-      background:linear-gradient(90deg,#32bd70,#2a9b53);
-      color:#022a1b;
-      border-radius:12px;
-      box-shadow:0px 6px 16px rgba(34,197,94,0.25);
+    .page {
+      max-width: 1100px;
+      width: 100%;
+      margin: 32px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
     }
 
-    /* LAYOUT */
-    .layout {
-      max-width:1200px;
-      height:calc(100vh - 80px);
-      margin:0 auto;
-      display:flex;
-      gap:24px;
+    @media (max-width: 880px) {
+      .page {
+        grid-template-columns: 1fr;
+        margin-top: 24px;
+      }
     }
 
-    .left-col, .right-col {
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-      overflow:hidden;
+
+
+    /* ---------- Theme toggle ---------- */
+    
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 18px;
+      z-index: 50;
     }
 
-    /* HERO SECTION */
-    .hero-box {
-      background:white;
-      padding:26px;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,0.08);
-      box-shadow:0 4px 12px rgba(0,0,0,0.06);
-      flex:1;
-      overflow:auto;
+    #themeToggle {
+      border: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-muted);
+      border-radius: 999px;
+      width: 70px;
+      height: 30px;
+      padding: 0 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      font-size: 13px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.5);
     }
 
-    .badge {
-      display:inline-block;
-      background:#e6f7e6;
-      padding:6px 12px;
-      border-radius:20px;
-      font-size:12px;
-      font-weight:600;
-      margin-bottom:12px;
-      color:#0f5d2a;
+    body[data-theme="light"] #themeToggle {
+      background: #f9fafb;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
     }
 
-    .hero-title {
-      font-size:28px;
-      font-weight:700;
-      margin-bottom:8px;
-      line-height:1.3;
-      color:#0b2545;
+    #themeToggle span.icon {
+      z-index: 1;
     }
 
-    .hero-title span {
-      background:linear-gradient(90deg,#16a34a,#32c1ee);
-      -webkit-background-clip:text;
-      color:transparent;
+    #themeToggle .thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      transition: transform 0.2s ease;
     }
 
-    .hero-desc {
-      font-size:14px;
-      color:#4b5563;
-      line-height:1.5;
-      margin-bottom:16px;
+    body[data-theme="light"] #themeToggle .thumb {
+      transform: translateX(34px);
+      background: #0f172a;
     }
 
-    .pills {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:20px;
+    #themeToggle .icon-sun {
+      opacity: 0.4;
+    }
+
+    #themeToggle .icon-moon {
+      opacity: 0.9;
+    }
+
+    body[data-theme="light"] #themeToggle .icon-sun {
+      opacity: 0.95;
+    }
+
+    body[data-theme="light"] #themeToggle .icon-moon {
+      opacity: 0.4;
+    }
+
+
+    /* Left side – Hero copy */
+    .hero {
+      padding-right: 8px;
+    }
+
+    .logo-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--chip-bg);
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.7);
+    }
+
+    h1 {
+      font-size: clamp(30px, 3.1vw, 38px);
+      line-height: 1.1;
+      margin: 0 0 12px 0;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(90deg, #22c55e, #38bdf8);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      margin: 0 0 18px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 430px;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
     }
 
     .pill {
-      background:#f5f7f8;
-      padding:8px 12px;
-      border-radius:100px;
-      border:1px solid #dbe2e8;
-      font-size:12px;
-      color:#0b2545;
-      font-weight:500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-muted);
     }
 
-    .feature-box {
-      background:#ffffff;
-      padding:14px 16px;
-      border-radius:14px;
-      border:1px solid #dbe2e8;
-      margin-bottom:10px;
+    .pill span.emoji {
+      font-size: 14px;
     }
 
-    .feature-title {
-      font-weight:700;
-      margin-bottom:4px;
-      color:#0b2545;
-    }
-    .feature-desc {
-      font-size:13px;
-      color:#475569;
+    .hero-metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
     }
 
-    /* RIGHT COLUMN */
-    .analyze-box {
-      background:#ffffff;
-      padding:20px;
-      border-radius:14px;
-      border:1px solid #dbe2e8;
-      box-shadow:0 4px 12px rgba(0,0,0,0.06);
-    }
-    .analyze-title {
-      font-size:17px;
-      font-weight:600;
-      margin-bottom:10px;
-      color:#0b4d8f;
-    }
-    .analyze-row {
-      display:flex;
-      gap:10px;
-    }
-    .analyze-input {
-      flex:1;
-      padding:10px 12px;
-      border-radius:10px;
-      border:1px solid #cbd5df;
-    }
-    .analyze-btn {
-      padding:10px 16px;
-      background:#2ea86f;
-      border:none;
-      border-radius:10px;
-      color:white;
-      font-weight:600;
-      cursor:pointer;
-    }
-    .analyze-btn:hover {
-      background:#238a59;
+    .hero-metric {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      background: var(--chip-bg);
+      min-width: 150px;
     }
 
-    /* PROFILE GRID */
-    .profile-section-title {
-      font-size:16px;
-      font-weight:700;
-      margin-bottom:8px;
-      color:#083a6b;
+    .hero-metric strong {
+      display: block;
+      color: var(--text-main);
+      font-size: 14px;
+      margin-bottom: 4px;
     }
 
-    .profiles-grid {
-      flex:1;
-      overflow:auto;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
+    /* Right – main card */
+    .card {
+      background: radial-gradient(circle at top, var(--bg-soft), var(--card));
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-subtle);
+      padding: 26px 24px 22px 24px;
+      position: relative;
+      overflow: hidden;
     }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at top right,
+        rgba(34, 197, 94, 0.16),
+        transparent 55%
+      );
+      opacity: 0.9;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .field {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .url-input::placeholder {
+      color: #6b7280;
+    }
+
+    .url-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.55);
+    }
+
+    .profiles-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .profiles-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .profiles-row label.profile-card:last-child {
+  grid-column: span 3;
+}
+
+    /* Light-mode tweaks */
+body[data-theme="light"] .card {
+  background: radial-gradient(circle at top, #e5f4ff, #ffffff);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+body[data-theme="light"] .url-input {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #0f172a;
+}
+
+body[data-theme="light"] .url-input::placeholder {
+  color: #9ca3af;
+}
+
 
     .profile-card {
-      background:#f6f9f9;
-      padding:14px;
-      border-radius:14px;
-      border:1px solid rgba(6,37,59,0.08);
-      cursor:pointer;
-      transition:.15s ease;
+      border-radius: 12px;
+      padding: 10px 9px;
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: border 0.18s ease, background 0.18s ease, transform 0.12s ease;
     }
+
+    /* Light-mode specific soft look */
+body[data-theme="light"] .profile-card {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
     .profile-card:hover {
-      background:#edf4f4;
-      border-color:#cbd5df;
+      border-color: rgba(34, 197, 94, 0.6);
+      transform: translateY(-1px);
     }
+
     .profile-top {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
     }
-    .profile-title {
-      font-weight:700;
-      color:#0b2545;
+
+    .profile-main-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-main);
+      font-weight: 500;
     }
+
+    .profile-main-label span.emoji {
+      font-size: 16px;
+    }
+
+    .profile-card input[type="radio"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
     .profile-tagline {
-      margin-top:6px;
-      font-size:13px;
-      color:#475569;
+      font-size: 11px;
+      opacity: 0.9;
     }
 
-    input[type="radio"] {
-      width:16px;
-      height:16px;
-      appearance:none;
-      border:2px solid #cbd5df;
-      border-radius:50%;
-      cursor:pointer;
-    }
-    input[type="radio"]:checked {
-      background:#2ea86f;
-      border-color:#2ea86f;
+    .cta-row {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    /* Last card spans full width */
-    .profiles-grid label.profile-card:last-child {
-      grid-column:1 / -1;
+    .btn-primary {
+      flex: 1;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: #022c22;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 40px rgba(34, 197, 94, 0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+
+    .btn-primary span.icon {
+      font-size: 16px;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .hint span {
+      color: var(--accent);
+    }
+
+    .card-footer {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.42);
+      color: #a7f3d0;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .steps {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-num {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    body[data-theme="light"] .card-footer {
+  border-top-color: #e5e7eb;
+}
+
+body[data-theme="light"] .badge {
+  background: var(--accent-soft);
+  border-color: rgba(22, 163, 74, 0.45);
+  color: #14532d;
+}
 
   </style>
 </head>
 <body>
+  <form id="demoForm" method="GET" target="_blank"></form>
 
-  <!-- HEADER -->
-  <header>
-    <div class="brand">AccessiBuild</div>
-    <nav>
-      <a href="aboutus.html">About</a>
-      <button id="demoBtn">Demo</button>
-    </nav>
-  </header>
+     <!-- Theme toggle + Demo button -->
+<div class="theme-toggle" style="display:flex; align-items:center; gap:10px;">
 
-  <!-- MAIN LAYOUT -->
-  <div class="layout">
+    <!-- Demo Button -->
+    <button id="demoBtn"
+      style="
+        padding:6px 14px;
+        border:none;
+        border-radius:999px;
+        background:linear-gradient(90deg,#38bdf8,#0ea5e9);
+        color:white;
+        font-size:13px;
+        font-weight:600;
+        cursor:pointer;
+        box-shadow:0 6px 20px rgba(14,165,233,0.4);
+      ">
+      🚀 Demo
+    </button>
 
-    <!-- LEFT COLUMN (HERO SECTION) -->
-    <div class="left-col">
+    <!-- Theme Toggle Button -->
+    <button id="themeToggle" type="button" aria-label="Toggle light/dark mode">
+      <span class="icon icon-moon">🌙</span>
+      <span class="icon icon-sun">☀️</span>
+      <span class="thumb"></span>
+    </button>
 
-      <div class="hero-box">
-
-        <div class="badge">AccessiBuild ·</div>
-
-        <div class="hero-title">
-          AI-Driven <span>Accessibility</span><br>
-          for Every Web Page
-        </div>
-
-        <div class="hero-desc">
-          Paste any URL, choose a disability profile, and AccessiBuild rewrites
-          the page layout in real-time — larger fonts, cleaner layout, less clutter,
-          and smarter focus mode.
-        </div>
-
-        <div class="pills">
-          <div class="pill">Neurodivergent-friendly reading</div>
-          <div class="pill">High-contrast low-vision mode</div>
-          <div class="pill">Ready for AI alt-text & summaries</div>
-        </div>
-
-        <div class="feature-box">
-          <div class="feature-title">1 Click = New Experience</div>
-          <div class="feature-desc">Same content, re-rendered per user’s accessibility needs.</div>
-        </div>
-
-        <div class="feature-box">
-          <div class="feature-title">Frontend-Agnostic</div>
-          <div class="feature-desc">Works on any public website. No changes needed from the site.</div>
-        </div>
-
+</div>
+  <div class="page">
+    <!-- LEFT: Hero -->
+    <section class="hero">
+      <div class="logo-row">
+        <div class="logo-dot"></div>
+        <span>AccessiBuild ·</span>
       </div>
 
+      <h1>
+        AI-Driven <span class="hero-highlight">Accessibility</span><br />
+        for Every Web Page 🌍
+      </h1>
+
+      <p class="hero-sub">
+        Paste any URL, choose a disability profile, and AccessiBuild rewrites the
+        page layout in real-time — larger fonts, cleaner layout, less clutter, and
+        smarter focus mode.
+      </p>
+
+      <div class="hero-pills">
+        <span class="pill"><span class="emoji">🧠</span> Neurodivergent-friendly reading</span>
+        <span class="pill"><span class="emoji">👁️</span> High-contrast low-vision mode</span>
+        <span class="pill"><span class="emoji">🔊</span> Ready for AI alt-text & summaries</span>
+      </div>
+
+      <div class="hero-metric-row">
+        <div class="hero-metric">
+          <strong>1 Click = New Experience</strong>
+          <span>Same content, re-rendered per user’s accessibility needs.</span>
+        </div>
+        <div class="hero-metric">
+          <strong>Frontend-Agnostic</strong>
+          <span>Works on any public website. No changes needed from the site.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Main form -->
+    <section class="card">
+      <div class="card-inner">
+        <div class="card-title">Analyze a Website</div>
+        <div class="card-sub">
+          Enter any public URL and we’ll rebuild it with an accessibility profile.
+        </div>
+
+        <form method="POST" action="/preview" target="_blank">
+          <div class="field">
+            <label for="url">Website URL</label>
+            <input
+              id="url"
+              name="url"
+              type="text"
+              class="url-input"
+              placeholder="https://example.com/article"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label>Choose an Accessibility Profile</label>
+            <div class="profiles-row">
+  <!-- Low Vision -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">👁️‍🗨️</span>
+        <span>Low Vision</span>
+      </div>
+      <input type="radio" name="profile" value="low_vision" checked />
     </div>
-
-    <!-- RIGHT COLUMN (ANALYZE + PROFILES) -->
-    <div class="right-col">
-
-      <div class="analyze-box">
-        <div class="analyze-title">Analyze a Website</div>
-        <div class="analyze-row">
-          <input type="url" class="analyze-input" placeholder="Enter website URL">
-          <button class="analyze-btn" id="analyzeBtn">Analyze</button>
-        </div>
-      </div>
-
-      <div>
-        <div class="profile-section-title">Choose an Accessibility Profile</div>
-
-        <div class="profiles-grid">
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">Dyslexia</div>
-              <input type="radio" name="profile" value="dyslexia">
-            </div>
-            <div class="profile-tagline">Simple fonts, extra spacing, cleaner reading.</div>
-          </label>
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">Autism</div>
-              <input type="radio" name="profile" value="autism">
-            </div>
-            <div class="profile-tagline">Calmer layout with soft colors.</div>
-          </label>
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">ADHD</div>
-              <input type="radio" name="profile" value="adhd">
-            </div>
-            <div class="profile-tagline">Reduced clutter for better focus.</div>
-          </label>
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">Motor</div>
-              <input type="radio" name="profile" value="motor">
-            </div>
-            <div class="profile-tagline">Big click targets and simple navigation.</div>
-          </label>
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">Elder</div>
-              <input type="radio" name="profile" value="elder">
-            </div>
-            <div class="profile-tagline">Large text with easy readability.</div>
-          </label>
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">Low Vision</div>
-              <input type="radio" name="profile" value="low_vision">
-            </div>
-            <div class="profile-tagline">High contrast & strong focus outline.</div>
-          </label>
-
-          <label class="profile-card">
-            <div class="profile-top">
-              <div class="profile-title">Photosensitive</div>
-              <input type="radio" name="profile" value="photosensitive">
-            </div>
-            <div class="profile-tagline">Removes flicker & flashing animations.</div>
-          </label>
-
-        </div>
-      </div>
-
+    <div class="profile-tagline">
+      Larger text, more contrast, strong focus outline.
     </div>
+  </label>
 
+  <!-- Dyslexia -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">📚</span>
+        <span>Dyslexia</span>
+      </div>
+      <input type="radio" name="profile" value="dyslexia" />
+    </div>
+    <div class="profile-tagline">
+      Simple fonts, extra spacing, shorter line width.
+    </div>
+  </label>
+
+  <!-- ADHD -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">⚡</span>
+        <span>ADHD</span>
+      </div>
+      <input type="radio" name="profile" value="adhd" />
+    </div>
+    <div class="profile-tagline">
+      Fewer banners & carousels, reduced visual noise.
+    </div>
+  </label>
+
+  <!-- Autism / Sensory -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">🧩</span>
+        <span>Autism</span>
+      </div>
+      <input type="radio" name="profile" value="autism" />
+    </div>
+    <div class="profile-tagline">
+      Softer colors, no motion, calmer layout.
+    </div>
+  </label>
+
+  <!-- Motor Disability -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">🖱️</span>
+        <span>Motor</span>
+      </div>
+      <input type="radio" name="profile" value="motor" />
+    </div>
+    <div class="profile-tagline">
+      Big click targets, accessible keyboard focus.
+    </div>
+  </label>
+
+  <!-- Elder / Easy-Read -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">👵</span>
+        <span>Elder</span>
+      </div>
+      <input type="radio" name="profile" value="elder" />
+    </div>
+    <div class="profile-tagline">
+      Extra-large text, soft background, strong headings.
+    </div>
+  </label>
+
+  <!-- Photosensitive -->
+  <label class="profile-card">
+    <div class="profile-top">
+      <div class="profile-main-label">
+        <span class="emoji">🚫</span>
+        <span>Photosensitive</span>
+      </div>
+      <input type="radio" name="profile" value="photosensitive" />
+    </div>
+    <div class="profile-tagline">
+      Turns off animations & flashing elements.
+    </div>
+  </label>
+</div>
+
+          </div>
+
+          <div class="cta-row">
+            <button type="submit" class="btn-primary">
+              <span class="icon">✨</span>
+              <span>Analyze & Rebuild</span>
+            </button>
+            <div class="hint">
+              <span>Tip:</span> Try a blog article or documentation page.
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <div class="badge">AI-Ready Engine</div>
+            <div class="steps">
+              <div class="step">
+                <div class="step-num">1</div>
+                <span>Fetch layout</span>
+              </div>
+              <div class="step">
+                <div class="step-num">2</div>
+                <span>Apply profile rules</span>
+              </div>
+              <div class="step">
+                <div class="step-num">3</div>
+                <span>Future: AI alt-text & summaries</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
   </div>
 
-  <script>
-    const profileToFile = {
-      dyslexia: 'dymain.html',
-      autism: 'autmain.html',
-      adhd: 'adhdmain.html',
-      motor: 'motor.html',
-      elder: 'elders.html',
-      low_vision: 'lvmain.html',
-      photosensitive: 'photsen.html'
+
+ <!-- DEMO BUTTON SCRIPT (paste this first) -->
+<script>
+  document.getElementById("demoBtn").addEventListener("click", () => {
+
+    const selected = document.querySelector("input[name='profile']:checked")?.value;
+
+    if (!selected) {
+      alert("Please select an accessibility preference before using the Demo.");
+      return;
+    }
+
+    const profileToDemoFile = {
+      low_vision: "lvmain.html",
+      dyslexia: "dymain.html",
+      adhd: "adhdmain.html",
+      autism: "autmain.html",
+      motor: "motor.html",
+      elder: "elders.html",
+      photosensitive: "photsen.html"
     };
 
-    /* Demo button */
-    document.getElementById("demoBtn").addEventListener("click", () => {
-      let selected = null;
-      document.querySelectorAll('input[name="profile"]').forEach(r => {
-        if (r.checked) selected = r.value;
-      });
+    const file = profileToDemoFile[selected];
 
-      if (!selected) {
-        alert("You did not select the mode in which you need to display.");
-        return;
+    document.getElementById("demoForm").action = `/demo/${file}`;
+    document.getElementById("demoForm").submit();
+  });
+</script>
+
+
+
+<!-- YOUR EXISTING THEME TOGGLE SCRIPT (keep as it is) -->
+<script>
+    (function () {
+      const body = document.body;
+      const toggle = document.getElementById("themeToggle");
+
+      const saved = localStorage.getItem("accessibuild-theme");
+      if (saved === "light") {
+        body.setAttribute("data-theme", "light");
       }
 
-      window.open(profileToFile[selected], "_blank");
-    });
+      function updateToggle() {
+        // nothing visual to sync beyond CSS, kept for extension if needed
+      }
+      updateToggle();
 
-    /* Analyze Button */
-    document.getElementById("analyzeBtn").addEventListener("click", () => {
-      alert("Website analyzer feature is under development 🔧");
-    });
-  </script>
+      toggle.addEventListener("click", function () {
+        const isLight = body.getAttribute("data-theme") === "light";
+        if (isLight) {
+          body.removeAttribute("data-theme");
+          localStorage.setItem("accessibuild-theme", "dark");
+        } else {
+          body.setAttribute("data-theme", "light");
+          localStorage.setItem("accessibuild-theme", "light");
+        }
+        updateToggle();
+      });
+    })();
+</script>
 
 </body>
 </html>
