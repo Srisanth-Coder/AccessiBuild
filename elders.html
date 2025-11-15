@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Elders - ADHD Resource Center</title>
+
+    <style>
+        /* Base: high-contrast, large readable typography */
+        :root{
+            --bg: #ffffff;
+            --text: #000000;
+            --muted: #444444;
+            --accent: #0b66a0; /* accessible blue */
+            --card-bg: #f7f7f7;
+            --radius: 12px;
+            --max-width: 980px;
+            --gap: 20px;
+        }
+
+        html { font-size: 18px; } /* adjust easily with JS controls */
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Skip link for keyboard users */
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        .skip-link:focus {
+            left: 16px;
+            top: 16px;
+            width: auto;
+            height: auto;
+            padding: 8px 12px;
+            background: var(--accent);
+            color: #fff;
+            z-index: 1000;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.4rem; /* ~43px */
+            margin: 0 0 8px 0;
+            color: var(--accent);
+        }
+
+        /* Large, simple navigation */
+        nav {
+            margin: 12px 0 20px 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        nav a {
+            display: inline-block;
+            padding: 12px 18px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            text-decoration: underline; /* clearer for vision */
+            color: var(--text);
+            font-size: 1.1rem;
+            border: 2px solid transparent;
+        }
+        nav a:focus,
+        nav a:hover {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        /* Font-size controls */
+        .controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .controls button {
+            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid var(--accent);
+            background: white;
+            cursor: pointer;
+        }
+        .controls button:focus { outline: 3px solid #ffd54f; }
+
+        /* Main content: stacked single-column cards for easy reading */
+        main[role="main"] {
+            margin-top: 8px;
+        }
+        .articles-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--gap);
+        }
+
+        article.card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        /* Image: clear, large, descriptive */
+        .card figure {
+            margin: 0;
+            min-width: 160px;
+            max-width: 260px;
+            flex: 0 0 220px;
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .card .content {
+            flex: 1 1 auto;
+        }
+
+        .card h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.6rem; /* ~29px */
+            color: var(--accent);
+        }
+
+        .card p {
+            margin: 0.4rem 0 0 0;
+            font-size: 1.12rem; /* ~20px */
+            color: var(--muted);
+        }
+
+        /* Links inside cards */
+        .card a.read-more {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: var(--accent);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .card a.read-more:focus, .card a.read-more:hover {
+            box-shadow: 0 4px 10px rgba(11,102,160,0.25);
+        }
+
+        footer {
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        /* High visible focus outlines for keyboard users */
+        a:focus, button:focus { outline: 3px solid #ffd54f; outline-offset: 2px; }
+
+        /* Responsive smaller screens: images stack above text */
+        @media (max-width: 640px) {
+            .card {
+                flex-direction: column;
+            }
+            .card figure { width: 100%; flex: none; }
+            nav ul { gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <div class="container">
+        <header role="banner" aria-label="Site header">
+            <h1>ADHD Resource Center</h1>
+
+            <nav role="navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="aigen.html">Home</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                    <!-- removed "Light mode" link as requested -->
+                </ul>
+            </nav>
+
+            <div class="controls" aria-hidden="false">
+                <label for="increase" style="font-weight:600;">Text size:</label>
+                <button id="decrease" aria-label="Decrease text size">A−</button>
+                <button id="reset" aria-label="Reset text size">A</button>
+                <button id="increase" aria-label="Increase text size">A+</button>
+            </div>
+        </header>
+
+        <main id="main-content" role="main" aria-labelledby="main-heading">
+            <h2 id="main-heading" style="position:absolute;left:-999px;top:auto;">Main content</h2>
+
+            <section class="articles-list" aria-label="Articles">
+                <article class="card" aria-labelledby="a1-title">
+                    <figure>
+                        <img src="img1.jpg" alt="Caregiver helping elder read an article" width="375" height="400">
+                    </figure>
+                    <div class="content">
+                        <a href="a1elder.html"><h2 id="a1-title">Article 1</h2></a>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                            Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.
+                        </p>
+                        <a class="read-more" href="a1adhd.html">Read full article</a>
+                    </div>
+                </article>
+
+                <article class="card" aria-labelledby="a2-title">
+                    <figure>
+                        <img src="img1.jpg" alt="Illustration of focus techniques" width="375" height="400">
+                    </figure>
+                    <div class="content">
+                        <a href="a2elder.html"><h2 id="a2-title">Article 2</h2></a>
+                        <p>This is a brief description of Article 2 — clear, large text for easy reading.</p>
+                        <a class="read-more" href="a2elder.html">Read full article</a>
+                    </div>
+                </article>
+
+                <article class="card" aria-labelledby="a3-title">
+                    <figure>
+                        <img src="img1.jpg" alt="Simple checklist image" width="375" height="400">
+                    </figure>
+                    <div class="content">
+                        <a href="a1elder.html"><h2 id="a3-title">Article 1 (repeat)</h2></a>
+                        <p>This is a brief description of Article 1. Repeated entry kept per request.</p>
+                        <a class="read-more" href="a1adhd.html">Read full article</a>
+                    </div>
+                </article>
+
+                <!-- Additional cards (kept duplicates as in original) -->
+                <article class="card" aria-labelledby="a4-title">
+                    <figure>
+                        <img src="img1.jpg" alt="Support image for ADHD resources" width="375" height="400">
+                    </figure>
+                    <div class="content">
+                        <a href="a2adhd.html"><h2 id="a4-title">Article 2 (repeat)</h2></a>
+                        <p>This is a brief description of Article 2.</p>
+                        <a class="read-more" href="a2adhd.html">Read full article</a>
+                    </div>
+                </article>
+
+                <article class="card" aria-labelledby="a5-title">
+                    <figure>
+                        <img src="img1.jpg" alt="Friendly image showing steps" width="375" height="400">
+                    </figure>
+                    <div class="content">
+                        <a href="a1adhd.html"><h2 id="a5-title">Article 1 (repeat)</h2></a>
+                        <p>This is a brief description of Article 1.</p>
+                        <a class="read-more" href="a1adhd.html">Read full article</a>
+                    </div>
+                </article>
+
+                <article class="card" aria-labelledby="a6-title">
+                    <figure>
+                        <img src="img1.jpg" alt="Accessible resources image" width="375" height="400">
+                    </figure>
+                    <div class="content">
+                        <a href="a2adhd.html"><h2 id="a6-title">Article 2 (repeat)</h2></a>
+                        <p>This is a brief description of Article 2.</p>
+                        <a class="read-more" href="a2adhd.html">Read full article</a>
+                    </div>
+                </article>
+            </section>
+        </main>
+
+        <footer role="contentinfo">
+            <p>Vaddi Srisanth and Co.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple text-size controls for elders: adjust root font-size
+        (function(){
+            const htmlEl = document.documentElement;
+            const increase = document.getElementById('increase');
+            const decrease = document.getElementById('decrease');
+            const reset = document.getElementById('reset');
+
+            function getSize() {
+                return parseFloat(getComputedStyle(htmlEl).fontSize);
+            }
+            function setSize(px) {
+                const min = 14, max = 28;
+                px = Math.max(min, Math.min(max, px));
+                htmlEl.style.fontSize = px + 'px';
+            }
+
+            increase.addEventListener('click', () => setSize(getSize() + 2));
+            decrease.addEventListener('click', () => setSize(getSize() - 2));
+            reset.addEventListener('click', () => setSize(18));
+        })();
+    </script>
+</body>
+</html></div>
