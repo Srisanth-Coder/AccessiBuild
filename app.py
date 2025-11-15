@@ -1,102 +1,218 @@
-# app.py
-from flask import Flask, request, render_template, Response
+from flask import Flask, render_template, request, redirect
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-import os
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+app = Flask(__name__)
 
-# Load CSS we will inject into proxied pages
-PROFILE_CSS_PATH = os.path.join(app.static_folder or 'static', 'profiles.css')
-if os.path.exists(PROFILE_CSS_PATH):
-    with open(PROFILE_CSS_PATH, 'r', encoding='utf-8') as fh:
-        PROFILE_CSS = fh.read()
-else:
-    PROFILE_CSS = "/* profile css file not found */"
+# -------------------------------------------------------------------
+# Accessibility profiles – predefined CSS
+# -------------------------------------------------------------------
+PROFILE_CSS = {
+    "low_vision": """
+        html, body { font-size: 18px !important; }
+        p, li, a, span, input, button, label {
+            font-size: 1.05em !important;
+            line-height: 1.8 !important;
+        }
+        body { filter: contrast(1.15); }
+        a { text-decoration: underline !important; }
+        *:focus {
+            outline: 3px solid #facc15 !important;
+            outline-offset: 3px !important;
+        }
+    """,
 
-@app.route('/')
-def index():
-    """Serve the front-end UI (templates/index.html)."""
-    return render_template('index.html')
+    "dyslexia": """
+        * { font-family: Arial, Verdana, sans-serif !important; }
+        p, li {
+            letter-spacing: 0.06em !important;
+            word-spacing: 0.12em !important;
+            line-height: 1.8 !important;
+        }
+        p { max-width: 60ch !important; }
+        body {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+        }
+    """,
 
-def sanitize_and_inject(html_text: str, original_base: str, profile_key: str) -> str:
+    "adhd": """
+        * { animation: none !important; transition: none !important; }
+        body {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+        }
+        [class*="banner"], [class*="promo"], [class*="carousel"],
+        [class*="slider"], [class*="ads"], [id*="ad"], iframe {
+            display: none !important;
+        }
+        main, article, section {
+            max-width: 70rem !important;
+            margin-inline: auto !important;
+        }
+    """,
+
+    "autism": """
+        * { animation: none !important; transition: none !important; }
+        body { filter: saturate(0.75) brightness(1.02); }
+        [class*="banner"], [class*="promo"],
+        [class*="carousel"], [class*="slider"] {
+            display: none !important;
+        }
+        section, article, main, nav {
+            margin-bottom: 1.6rem !important;
+        }
+        p, li { line-height: 1.9 !important; }
+    """,
+
+    "motor": """
+        a, button, input[type="button"], input[type="submit"], input[type="reset"] {
+            min-height: 44px !important;
+            padding: 10px 18px !important;
+            font-size: 1.05em !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        *:focus {
+            outline: 3px solid #2563eb !important;
+            outline-offset: 3px !important;
+        }
+    """,
+
+    "elder": """
+        html, body { font-size: 19px !important; }
+        body {
+            background-color: #fdf6e3 !important;
+            color: #111827 !important;
+        }
+        p, li { line-height: 1.9 !important; }
+        h1, h2, h3 {
+            font-weight: 700 !important;
+            margin-top: 1.2em !important;
+        }
+        a { text-decoration: underline !important; }
+    """,
+
+    "photosensitive": """
+        *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+        }
+        video[autoplay], [class*="video-autoplay"],
+        [data-autoplay="true"] { autoplay: false !important; }
+        img[src$=".gif"], [class*="gif"], [class*="marquee"] {
+            animation: none !important;
+        }
+    """,
+
+    # Custom profile (CSS generated dynamically)
+    "custom": ""  
+}
+
+
+# -------------------------------------------------------------------
+# Custom Profile CSS Generator
+# -------------------------------------------------------------------
+def generate_custom_css(size, family, gradient):
+    gradients = {
+        "green-blue": "linear-gradient(135deg, #22c55e, #3b82f6)",
+        "purple-pink": "linear-gradient(135deg, #a855f7, #ec4899)",
+        "orange-red": "linear-gradient(135deg, #f97316, #ef4444)",
+        "mono-dark": "linear-gradient(135deg, #0f172a, #1e293b)"
+    }
+
+    css = f"""
+        html, body {{
+            font-size: {size} !important;
+            font-family: {family} !important;
+        }}
+        body {{
+            background: {gradients.get(gradient, gradients['green-blue'])} !important;
+            color: white !important;
+        }}
+        p, li {{
+            line-height: 1.75 !important;
+        }}
     """
-    Parse the fetched HTML and inject:
-      - a <base> tag so relative resources point to the original site
-      - a <style id="a11y-profile"> containing PROFILE_CSS
-      - a class on <body> that activates the chosen profile (e.g. profile-dyslexic)
-    """
-    soup = BeautifulSoup(html_text, 'html.parser')
+    return css
 
-    # Ensure there's a <head>
-    if soup.head is None:
-        head = soup.new_tag('head')
+
+# -------------------------------------------------------------------
+# Injecting CSS into scraped page
+# -------------------------------------------------------------------
+def apply_profile_css(html: str, profile: str, original_url: str, custom_css=None) -> str:
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Base URL fix
+    parsed = urlparse(original_url)
+    root = f"{parsed.scheme}://{parsed.netloc}"
+
+    if soup.head:
+        if not soup.head.find("base"):
+            soup.head.insert(0, soup.new_tag("base", href=root))
+    else:
+        head = soup.new_tag("head")
+        head.append(soup.new_tag("base", href=root))
         soup.insert(0, head)
-    else:
-        head = soup.head
 
-    # Insert or replace <base href="...">
-    base_tag = soup.new_tag('base', href=original_base)
-    existing = head.find('base')
-    if existing:
-        existing.replace_with(base_tag)
-    else:
-        head.insert(0, base_tag)
+    # Remove scripts for ADHD + Photosensitive
+    if profile in ("adhd", "photosensitive"):
+        for script in soup.find_all("script"):
+            script.decompose()
 
-    # Add the style block with profile CSS
-    style_tag = soup.new_tag('style', id='a11y-profile')
-    style_tag.string = PROFILE_CSS
-    head.append(style_tag)
-
-    # Ensure a <body> exists and add profile class
-    if soup.body is None:
-        body = soup.new_tag('body')
-        # Move all top-level content into the new body
-        for element in list(soup.contents):
-            body.append(element.extract())
-        soup.append(body)
-    body = soup.body
-
-    # Remove any existing profile-* classes and add the requested one
-    existing_classes = list(body.get('class', []))
-    existing_classes = [c for c in existing_classes if not c.startswith('profile-')]
-    if profile_key:
-        existing_classes.append(profile_key)
-    if existing_classes:
-        body['class'] = existing_classes
+    # Inject CSS
+    style_tag = soup.new_tag("style")
+    style_tag.string = custom_css if profile == "custom" else PROFILE_CSS.get(profile, "")
+    soup.head.append(style_tag)
 
     return str(soup)
 
-@app.route('/fetch')
-def fetch_and_modify():
-    """
-    Proxy endpoint:
-      - Accepts query params: ?url=TARGET&profile=profile-key
-      - Fetches TARGET, injects PROFILE_CSS and profile class, returns modified HTML.
-    """
-    target = request.args.get('url', '')
-    profile = request.args.get('profile', '')
 
-    if not target:
-        return "Missing 'url' parameter", 400
+# -------------------------------------------------------------------
+# Routes
+# -------------------------------------------------------------------
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("aigen.html")
 
-    # Normalize URL: add http if missing
-    parsed = urlparse(target)
-    if not parsed.scheme:
-        target = 'http://' + target
-        parsed = urlparse(target)
+
+@app.route("/preview", methods=["POST"])
+def preview():
+    url = request.form.get("url")
+    profile = request.form.get("profile")
+
+    # Custom profile settings
+    custom_css = None
+    if profile == "custom":
+        size = request.form.get("font_size", "18px")
+        family = request.form.get("font_family", "system-ui")
+        gradient = request.form.get("gradient", "green-blue")
+        custom_css = generate_custom_css(size, family, gradient)
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0 Safari/537.36"
+        )
+    }
 
     try:
-        resp = requests.get(target, timeout=12, headers={'User-Agent': 'a11y-simulator/1.0'})
-        resp.raise_for_status()
+        resp = requests.get(url, headers=headers, timeout=12)
     except Exception as e:
-        return f"Error fetching target URL: {e}", 502
+        return f"<h2>Error loading URL</h2><p>{e}</p>"
 
-    base = f"{parsed.scheme}://{parsed.netloc}"
-    modified = sanitize_and_inject(resp.text, base, profile)
-    return Response(modified, headers={'Content-Type': 'text/html; charset=utf-8'})
+    if resp.status_code >= 400:
+        return f"<h2>Blocked by website</h2><p>Status: {resp.status_code}</p>"
 
-if __name__ == '__main__':
-    # When run directly, start the Flask dev server on port 5000
-    app.run(debug=True, port=5000)
+    html = apply_profile_css(resp.text, profile, url, custom_css)
+    return html
+
+
+# -------------------------------------------------------------------
+
+if __name__ == "__main__":
+    app.run(debug=True)
