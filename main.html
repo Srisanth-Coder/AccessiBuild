@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessiBuild AI Demo</title>
+  <style>
+    /* 💡 Default light mode styles */
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f5f5f5;
+      color: #333;
+      transition: background 0.4s, color 0.4s;
+    }
+    h2 {
+      text-align: center;
+      color: #0078D7;
+    }
+    #container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 20px;
+      transition: background 0.4s, color 0.4s;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+    button {
+      background-color: #0078D7;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    #preview {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    #aiSuggestions {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #222;
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      width: 300px;
+      display: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      z-index: 9999;
+    }
+    #aiSuggestions h4 {
+      margin-top: 0;
+    }
+    #closeOverlay {
+      margin-top: 10px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    /* 🌙 Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #f5f5f5;
+    }
+    body.dark-mode #container {
+      background: #1e1e1e;
+      color: #f5f5f5;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+    body.dark-mode select,
+    body.dark-mode button {
+      background-color: #2b2b2b;
+      color: #fff;
+      border: 1px solid #555;
+    }
+    body.dark-mode button:hover {
+      background-color: #444;
+    }
+    body.dark-mode #aiSuggestions {
+      background: #333;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    /* 🌗 Dark mode toggle button */
+    #darkModeToggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      font-size: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #333;
+      transition: transform 0.3s ease, color 0.3s;
+      z-index: 10000;
+    }
+    body.dark-mode #darkModeToggle {
+      color: #f5f5f5;
+      transform: rotate(180deg);
+    }
+  </style>s6y
+</head>
+<body>
+  <button id="darkModeToggle" aria-label="Toggle Dark Mode">🌙</button>
+
+  <h2>AccessiBuild AI — Demo Version</h2>
+  <div id="container">
+    <label for="profile"><b>Select Accessibility Profile:</b></label>
+    <select id="profile">
+      <option value="dyslexia">Dyslexia</option>
+      <option value="lowvision">Low Vision</option>
+      <option value="adhd">ADHD</option>
+      <option value="autism">Autism</option>
+    </select>
+    <button id="applyBtn">Apply Settings</button>
+
+    <div id="preview">
+      <p>
+        This is a sample webpage section. When you apply a profile, 
+        the visual appearance of this content will change accordingly.
+      </p>
+    </div>
+  </div>
+
+  <div id="aiSuggestions">
+    <h4>AI Accessibility Suggestions</h4>
+    <p id="aiText"></p>
+    <button id="closeOverlay">Close</button>
+  </div>
+</body>
+</html>

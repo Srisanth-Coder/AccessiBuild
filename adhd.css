@@ -1,0 +1,63 @@
+/* ADHD-friendly typography + light default background */
+
+body {
+  background-color: #f7fafc; /* soft, low-contrast light background */
+  color: #0f172a;           /* clear, dark text for good contrast */
+  font-family: 'OpenDyslexic', 'Comic Sans MS', 'Verdana', sans-serif;
+  font-size: 20px;          /* slightly larger for readability */
+  font-weight: 500;
+  line-height: 1.8;         /* more spacing between lines */
+  letter-spacing: 0.15px;   /* small increase helps scanning */
+  -webkit-font-smoothing: antialiased;
+  text-align: left;         /* avoids justification which can hinder focus */
+  margin: 0;
+  padding: 0;
+}
+
+/* Headings are distinct and easy to scan */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+  color: #0066cc; /* calming blue accent */
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1.2em;
+  margin-bottom: 0.4em;
+  letter-spacing: 0;
+}
+
+/* Article container - less visual clutter */
+section.articles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.6);
+  box-shadow: 0 4px 12px rgba(2,6,23,0.04);
+}
+
+/* Table adjustments: clearer spacing, neutral background */
+table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+}
+th, td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  vertical-align: middle;
+}
+th {
+  background-color: #e6f4ff;
+  color: #004a87;
+  font-weight: 700;
+}

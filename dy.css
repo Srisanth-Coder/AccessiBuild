@@ -1,0 +1,76 @@
+body {
+  background-color: #fdf4e2; /* Soft light background */
+  color: #222; /* High contrast text */
+  font-family: 'OpenDyslexic', 'Lexend', Arial, sans-serif; /* Dyslexia-friendly fonts */
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 2;
+  letter-spacing: 0.7px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lexend', 'OpenDyslexic', Arial, sans-serif;
+  color: #0078D7; /* Calm blue for headings */
+}
+
+section.articles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+  border: 2px solid #0078D7;
+  padding: 24px;
+  box-shadow: 0 4px 12px #cfd8dc;
+  background: #fff;
+  border-radius: 12px;
+}
+
+table {
+  width: 90%;
+  margin: 24px auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 120, 215, 0.08);
+  background: #e3f2fd;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #b3e5fc;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #b3e5fc;
+  font-family: 'OpenDyslexic', 'Lexend', Arial, sans-serif;
+}
+
+th {
+  background-color: #0078D7;
+  color: #fff;
+}
+
+a {
+  font-weight: bold;
+  color: #0078D7;
+  font-size: 22px;
+  text-decoration: underline;
+  outline: 2px solid transparent;
+  transition: outline 0.2s;
+}
+a:focus, a:hover {
+  outline: 2px solid #0078D7;
+  background: #e3f2fd;
+}
+
+img {
+  filter: none;
+  border: 2px solid #0078D7;
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.article-title {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'Lexend', 'OpenDyslexic', Arial, sans-serif;
+}

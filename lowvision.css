@@ -1,0 +1,65 @@
+body {
+  background-color: #ffffff;    /* Clean white background */
+  color: #000000;              /* High contrast black text */
+  font-family: 'Arial', sans-serif;
+  font-size: 24px;             /* Larger base font size */
+  font-weight: 500;
+  line-height: 2;              /* Increased line height for better readability */
+}
+
+section.articles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;                   /* Increased spacing */
+  justify-content: center;
+  border: 4px solid #000000;   /* Thicker, high contrast border */
+  padding: 24px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background: #ffffff;   
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Arial', sans-serif;
+  color: #000000;              /* High contrast headers */
+  font-size: 32px;             /* Larger heading size */
+  margin: 24px 0;
+}
+
+table {
+  width: 90%;
+  margin: 24px auto;
+  border: 2px solid #000000;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+th, td {
+  padding: 16px;
+  text-align: left;
+  border: 2px solid #000000;   /* High contrast borders */
+  font-size: 24px;
+}
+
+th {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: bold;
+}
+
+a {
+  font-weight: bold;
+  color: #0000EE;              /* Standard blue for links */
+  font-size: 24px;
+  text-decoration: underline;   /* Clear indication of links */
+}
+
+img {
+  border: 3px solid #000000;
+  max-width: 100%;
+  height: auto;
+}
+
+.article-title {
+  font-size: 32px;
+  font-weight: bold;
+}

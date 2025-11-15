@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Low Vision Articles - Dark Mode</title>
+  <style>
+    body {
+      background-color: #121212;    /* Dark background */
+      color: #ffffff;              /* White text for high contrast */
+      font-family: 'Arial', sans-serif;
+      font-size: 24px;             
+      font-weight: 500;
+      line-height: 2;              
+    }
+
+    section.articles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;                   
+      justify-content: center;
+      border: 4px solid #ffffff;   /* White border for contrast */
+      padding: 24px;
+      box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+      background: #1e1e1e;         /* Slightly lighter dark background */
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Arial', sans-serif;
+      color: #ffffff;              
+      font-size: 32px;             
+      margin: 24px 0;
+    }
+
+    table {
+      width: 90%;
+      margin: 24px auto;
+      border: 2px solid #ffffff;
+      border-collapse: collapse;
+      background: #1e1e1e;
+    }
+
+    th, td {
+      padding: 16px;
+      text-align: left;
+      border: 2px solid #ffffff;   
+      font-size: 24px;
+    }
+
+    th {
+      background-color: #2d2d2d;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    a {
+      font-weight: bold;
+      color: #66b3ff;              /* Light blue for better visibility */
+      font-size: 24px;
+      text-decoration: underline;   
+    }
+
+    img {
+      border: 3px solid #ffffff;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .article-title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    #lightModeToggle {
+      padding: 10px 20px;
+      font-size: 20px;
+      background-color: #2d2d2d;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+    }
+
+    #lightModeToggle:hover {
+      background-color: #3d3d3d;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Low Vision Resource Center</h1>
+    <table>
+      <tr>
+        <td><a href="aigen.html">Home</a></td>
+        <td><a href="aboutus.html">About Us</a></td>   
+        <td><button id="lightModeToggle" onclick="window.location.href='lvmain.html'">Light Mode</button></td> 
+      </tr>
+    </table>
+  </header>
+  <main class="content">
+    <table>
+      <tr>
+        <td>
+          <section class="articles">
+            <img src="img1.jpg" width="375" height="400" alt="Article 1 featured image" style="display: block; margin: 0 auto;">
+            <a href="a1lowvision.html">
+              <h2>Article 1: Understanding Low Vision</h2>
+            </a>
+            This is a brief description of Article 1.
+          </section>
+        </td>
+        <td>
+          <section class="articles">
+            <img src="img1.jpg" width="375" height="400" alt="Article 2 featured image" style="display: block; margin: 0 auto;">
+            <a href="a2lowvision.html">
+              <h2>Article 2: Assistive Technologies</h2>
+            </a>
+            This is a brief description of Article 2.
+          </section>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <section class="articles">
+           <center> <img src="img1.jpg" width="375" height="400" alt="alternatetext"></center>
+            <a href="a1lowvision.html">
+              <h2>Article 1</h2>
+            </a>
+            This is a brief description of Article 1.
+          </section>
+        </td>
+
+        <td>
+          <section class="articles">
+            <center> <img src="img1.jpg" width="375" height="400" alt="alternatetext"></center>
+            <a href="a2lowvision.html">
+              <h2>Article 2</h2>
+            </a>
+            This is a brief description of Article 2.
+          </section>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <section class="articles">
+            <center> <img src="img1.jpg" width="375" height="400" alt="alternatetext"></center>
+            <a href="a1lowvision.html">
+              <h2>Article 1</h2>
+            </a>
+            This is a brief description of Article 1.
+          </section>
+        </td>
+
+        <td>
+          <section class="articles">
+            <center> <img src="img1.jpg" width="375" height="400" alt="alternatetext"></center>
+            <a href="a2lowvision.html">
+              <h2>Article 2</h2>
+            </a>
+            This is a brief description of Article 2.
+          </section>  
+        </td>
+      </tr>
+    </table>
+
+  </main>
+  <footer>
+    <p>Vaddi Srisanth and Co.</p>
+  </footer>
+  <!-- Rest of your existing body content remains the same -->
+</body>
+
+</html>
