@@ -1,7 +1,7 @@
 body {
   background-color: #fdf4e2; /* Soft light background */
   color: #222; /* High contrast text */
-  font-family: 'OpenDyslexic', 'Lexend', Arial, sans-serif; /* Dyslexia-friendly fonts */
+  font-family: 'Comic Sans MS', 'Lexend', Arial, sans-serif; /* Dyslexia-friendly fonts */
   font-size: 20px;
   font-weight: 600;
   line-height: 2;
@@ -9,7 +9,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Lexend', 'OpenDyslexic', Arial, sans-serif;
+  font-family: 'Lexend', 'Comic Sans MS', Arial, sans-serif;
   color: #0078D7; /* Calm blue for headings */
 }
 
